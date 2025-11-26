@@ -1,4 +1,4 @@
-import 'package:codigo_transito_devpaul/infrastructure/services/openai_service.dart';
+import 'package:codigo_transito_devpaul/infrastructure/services/gemini_service.dart';
 import 'package:codigo_transito_devpaul/presentation/providers/users/user_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -42,7 +42,7 @@ class BasicChat extends _$BasicChat {
     isGeminiWriting.setIsWriting();
 
     try {
-      final response = await OpenAIService.sendMessage(prompt);
+      final response = await GeminiService.sendMessage(prompt);
 
       isGeminiWriting.setIsNotWriting();
 
