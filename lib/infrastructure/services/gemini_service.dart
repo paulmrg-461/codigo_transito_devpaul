@@ -23,6 +23,20 @@ class GeminiService {
   static Future<String> sendMessage(String message) async {
     try {
       final payload = {
+        'system_instruction': {
+          'role': 'system',
+          'parts': [
+            {
+              'text':
+                  'Eres un asistente experto en la Ley 769 de 2002 del Código Nacional de Tránsito de Colombia. Responde siempre en español colombiano, en texto plano, sin bloques de código ni JSON ni coordenadas. Proporciona una respuesta jurídica clara, citando artículos aplicables cuando sea útil.',
+            },
+          ],
+        },
+        'generationConfig': {
+          'temperature': 0.7,
+          'maxOutputTokens': 500,
+          'response_mime_type': 'text/plain',
+        },
         'contents': [
           {
             'role': 'user',

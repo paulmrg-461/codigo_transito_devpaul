@@ -17,7 +17,9 @@ class ChatStorage {
     await _box.put(keyMessages, list);
   }
 
-  static Future<List<Message>> loadMessages(User Function(String) resolveUser) async {
+  static Future<List<Message>> loadMessages(
+    User Function(String) resolveUser,
+  ) async {
     final data = _box.get(keyMessages);
     if (data is List) {
       return data
@@ -26,6 +28,10 @@ class ChatStorage {
           .toList();
     }
     return [];
+  }
+
+  static Future<void> clearMessages() async {
+    await _box.put(keyMessages, <Map<String, dynamic>>[]);
   }
 
   static Map<String, dynamic> _toMap(Message message) {
@@ -46,7 +52,10 @@ class ChatStorage {
     };
   }
 
-  static Message _fromMap(Map<String, dynamic> map, User Function(String) resolveUser) {
+  static Message _fromMap(
+    Map<String, dynamic> map,
+    User Function(String) resolveUser,
+  ) {
     final type = map['type'] as String? ?? 'text';
     final authorId = map['authorId'] as String? ?? '';
     final author = resolveUser(authorId);

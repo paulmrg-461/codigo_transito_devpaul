@@ -34,6 +34,16 @@ class BasicChat extends _$BasicChat {
     _addTextMessage(partialText, user);
   }
 
+  void deleteMessage(String id) {
+    state = state.where((m) => m.id != id).toList();
+    ChatStorage.saveMessages(state);
+  }
+
+  void clearAll() {
+    state = [];
+    ChatStorage.clearMessages();
+  }
+
   void _addTextMessage(PartialText partialText, User author) {
     final message = TextMessage(
       id: uuid.v4(),

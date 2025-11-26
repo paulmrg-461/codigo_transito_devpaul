@@ -18,7 +18,31 @@ class BasicPromptScreen extends ConsumerWidget {
     final chatMessages = ref.watch(basicChatProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Asistente de Tránsito')),
+      appBar: AppBar(
+        title: const Text('Asistente de Tránsito'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Borrar historial'),
+                  content: const Text('¿Deseas borrar todo el historial?'),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Borrar')),
+                  ],
+                ),
+              );
+              if (confirmed == true) {
+                ref.read(basicChatProvider.notifier).clearAll();
+              }
+            },
+            icon: const Icon(Icons.delete_forever),
+            tooltip: 'Borrar historial',
+          ),
+        ],
+      ),
       body: Chat(
         messages: chatMessages,
 
@@ -26,6 +50,22 @@ class BasicPromptScreen extends ConsumerWidget {
         onSendPressed: (types.PartialText partialText) {
           final basicChatNotifier = ref.read(basicChatProvider.notifier);
           basicChatNotifier.addMessage(partialText: partialText, user: user);
+        },
+        onMessageLongPress: (context, message) async {
+          final confirmed = await showDialog<bool>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Borrar mensaje'),
+              content: const Text('¿Deseas borrar este mensaje?'),
+              actions: [
+                TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+                TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Borrar')),
+              ],
+            ),
+          );
+          if (confirmed == true) {
+            ref.read(basicChatProvider.notifier).deleteMessage(message.id);
+          }
         },
         user: user,
         theme: DarkChatTheme(),
