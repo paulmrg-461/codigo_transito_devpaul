@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class OpenAIService {
   static const String _baseUrl = 'https://api.openai.com/v1';
-  
+
   static String get _apiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
   static String get _model => dotenv.env['OPENAI_MODEL'] ?? '';
 
@@ -24,12 +23,10 @@ class OpenAIService {
           'messages': [
             {
               'role': 'system',
-              'content': 'Eres un asistente experto en la Ley 769 de 2002 del Código Nacional de Tránsito de Colombia. Responde de manera precisa y útil sobre temas relacionados con el tránsito y transporte en Colombia. Utiliza siempre el español colombiano correcto con todos los acentos y tildes apropiados. Mantén un lenguaje formal y profesional.'
+              'content':
+                  'Eres un asistente experto en la Ley 769 de 2002 del Código Nacional de Tránsito de Colombia. Responde de manera precisa y útil sobre temas relacionados con el tránsito y transporte en Colombia. Utiliza siempre el español colombiano correcto con todos los acentos y tildes apropiados. Mantén un lenguaje formal y profesional.',
             },
-            {
-              'role': 'user',
-              'content': message
-            }
+            {'role': 'user', 'content': message},
           ],
           'max_tokens': 500,
           'temperature': 0.7,

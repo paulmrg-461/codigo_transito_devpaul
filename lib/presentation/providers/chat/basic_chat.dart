@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 
 import 'package:codigo_transito_devpaul/presentation/providers/chat/is_gemini_writing.dart';
+import 'package:codigo_transito_devpaul/infrastructure/local/chat_storage.dart';
 
 part 'basic_chat.g.dart';
 
@@ -14,6 +15,15 @@ final uuid = Uuid();
 class BasicChat extends _$BasicChat {
   @override
   List<Message> build() {
+    Future(() async {
+      final user = ref.read(userProvider);
+      final geminiUser = ref.read(geminiUserProvider);
+      User resolve(String id) => id == geminiUser.id ? geminiUser : user;
+      final loaded = await ChatStorage.loadMessages(resolve);
+      if (loaded.isNotEmpty) {
+        state = loaded;
+      }
+    });
     return [];
   }
 
@@ -33,6 +43,7 @@ class BasicChat extends _$BasicChat {
     );
 
     state = [message, ...state];
+    ChatStorage.saveMessages(state);
     _geminiTextResponse(partialText.text);
   }
 
@@ -54,6 +65,7 @@ class BasicChat extends _$BasicChat {
       );
 
       state = [message, ...state];
+      ChatStorage.saveMessages(state);
     } catch (e) {
       isGeminiWriting.setIsNotWriting();
 
@@ -65,6 +77,7 @@ class BasicChat extends _$BasicChat {
       );
 
       state = [errorMessage, ...state];
+      ChatStorage.saveMessages(state);
     }
   }
 }
